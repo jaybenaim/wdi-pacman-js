@@ -58,9 +58,12 @@ function displayStats() {
 
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
-  console.log('(d) Eat 10 Dots');
-  console.log('(s) Eat 100 Dots');
-  console.log('(a) Eat All The Dots!!');
+  if (dots > 10) 
+    console.log('(d) Eat 10 Dots');
+  if (dots > 100)
+    console.log('(s) Eat 100 Dots');
+  if (dots > 0) 
+    console.log('(a) Eat All The Dots!!');
   if (powerPellets >= 1) { 
     console.log('(p) Eat Power-Pellet');
   }
@@ -95,6 +98,9 @@ function eatDot(dotAmount) {
   } else if (dotAmount == 'all') { 
     dots = 0; 
   } 
+  if (dots < 0){ 
+    dots = 0
+  }
 }
 
 var eatGhost = (ghost) => { 
