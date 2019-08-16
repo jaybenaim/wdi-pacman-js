@@ -2,6 +2,7 @@
 let score = 0;
 let lives = 2;
 let powerPellets = 4; 
+let dots = 240; 
 
 // Define your ghosts here
 
@@ -52,19 +53,28 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log(`Score: ${score}     Lives: ${lives} \n Power-Pellets: ${powerPellets}`);
+  console.log(`Score: ${score}   Dots: ${dots}  Lives: ${lives} \n Power-Pellets: ${powerPellets}`);
 }
 
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
-  console.log('(d) Eat Dot');
+  console.log('(d) Eat 10 Dots');
+  console.log('(s) Eat 100 Dots');
+  console.log('(a) Eat All The Dots!!');
   if (powerPellets >= 1) { 
     console.log('(p) Eat Power-Pellet');
   }
-  console.log('(1) Eat Inky'); 
-  console.log('(2) Eat Blnky'); 
-  console.log('(3) Eat Pinky'); 
-  console.log('(4) Eat Clyde'); 
+  ghosts.forEach(function(ghost) { 
+    if (ghost.edible == false) { 
+      ghost.edible = '(inedible)'
+    } else { 
+      ghost.edible = '(edible)'
+    }
+  })
+  console.log('(1) Eat Inky ' + inky.edible); 
+  console.log('(2) Eat Blnky ' + blinky.edible); 
+  console.log('(3) Eat Pinky ' + pinky.edible); 
+  console.log('(4) Eat Clyde ' + clyde.edible); 
   console.log('(q) Quit');
 }
 
@@ -75,9 +85,16 @@ function displayPrompt() {
 
 
 // Menu Options
-function eatDot() {
+function eatDot(dotAmount) {
   console.log('\nChomp!');
   score += 10;
+  if (dotAmount == 10) { 
+    dots -= 10; 
+  } else if (dotAmount == 100) { 
+    dots -= 100; 
+  } else if (dotAmount == 'all') { 
+    dots = 0; 
+  } 
 }
 
 var eatGhost = (ghost) => { 
@@ -115,8 +132,14 @@ function processInput(key) {
       process.exit();
       break;
     case 'd':
-      eatDot();
+      eatDot(10);
       break;
+    case 's': 
+      eatDot(100); 
+      break;
+    case 'a': 
+      eatDot('all'); 
+      break; 
     case '1': 
       eatGhost(inky); 
       break; 
@@ -130,7 +153,9 @@ function processInput(key) {
       eatGhost(clyde); 
       break;
     case 'p': 
-      if (powerPellets >= 1) { 
+      if (powerPellets == 0) { 
+        console.log("\n No Power-Pellets left!")
+      } else if (powerPellets >= 1) { 
         eatPowerPellet(); 
       } 
       break; 
@@ -157,7 +182,7 @@ drawScreen();
 stdin.on('data', (key) => {
   process.stdout.write(key);
   processInput(key);
-  setTimeout(drawScreen, 900); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
+  setTimeout(drawScreen, 300); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
 });
 
 // Player Quits
