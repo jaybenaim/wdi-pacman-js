@@ -1,7 +1,7 @@
 // Setup initial game stats
 let score = 0;
 let lives = 2;
-
+let powerPellets = 4; 
 
 // Define your ghosts here
 
@@ -52,18 +52,20 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log(`Score: ${score}     Lives: ${lives}`);
+  console.log(`Score: ${score}     Lives: ${lives} \n Power-Pellets: ${powerPellets}`);
 }
 
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
   console.log('(d) Eat Dot');
+  if (powerPellets >= 1) { 
+    console.log('(p) Eat Power-Pellet');
+  }
   console.log('(1) Eat Inky'); 
   console.log('(2) Eat Blnky'); 
   console.log('(3) Eat Pinky'); 
   console.log('(4) Eat Clyde'); 
   console.log('(q) Quit');
-
 }
 
 function displayPrompt() {
@@ -80,14 +82,29 @@ function eatDot() {
 
 var eatGhost = (ghost) => { 
     if (ghost.edible === false) { 
+
         if (lives > 0) { 
             lives -= 1; 
             console.log(`\nYou got eaten by ${ghost.name} the ${ghost.colour} ghost. `)
         } else { 
             process.exit(); 
         }
-
+        
+    } else { 
+      score += 200; 
+      ghost.edible = false 
+      console.log(`\nYou ate ${ghost.name}`); 
     }
+}
+
+var eatPowerPellet = () => { 
+    score += 50; 
+    if (powerPellets >= 1) { 
+      powerPellets -= 1;
+    } 
+    ghosts.forEach(function(ghost){ 
+        ghost.edible = true; 
+      }); 
 }
 
 // Process Player's Input
@@ -111,11 +128,16 @@ function processInput(key) {
       break; 
     case '4': 
       eatGhost(clyde); 
+      break;
+    case 'p': 
+      if (powerPellets >= 1) { 
+        eatPowerPellet(); 
+      } 
       break; 
     default:
       console.log('\nInvalid Command!');
   }
-}
+}  
 
 
 //
@@ -135,7 +157,7 @@ drawScreen();
 stdin.on('data', (key) => {
   process.stdout.write(key);
   processInput(key);
-  setTimeout(drawScreen, 300); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
+  setTimeout(drawScreen, 900); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
 });
 
 // Player Quits
