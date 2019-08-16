@@ -3,7 +3,7 @@ let score = 0;
 let lives = 2;
 let powerPellets = 4; 
 let dots = 240; 
-
+let ghostsEaten = 0; 
 // Define your ghosts here
 
 // replace this comment with your four ghosts setup as objects
@@ -53,7 +53,7 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log(`Score: ${score}   Dots: ${dots}  Lives: ${lives} \n Power-Pellets: ${powerPellets}`);
+  console.log(`Score: ${score}   Dots: ${dots}  Lives: ${lives} \n Power-Pellets: ${powerPellets} Ghosts Eaten: ${ghostsEaten}`);
 }
 
 function displayMenu() {
@@ -70,12 +70,12 @@ function displayMenu() {
   ghosts.forEach(function(ghost) { 
     if (ghost.edible == false) { 
       ghost.edible = '(inedible)'
-    } else { 
+    } else if (ghost.edible == true) { 
       ghost.edible = '(edible)'
     }
   })
   console.log('(1) Eat Inky ' + inky.edible); 
-  console.log('(2) Eat Blnky ' + blinky.edible); 
+  console.log('(2) Eat Blinky ' +  blinky.edible); 
   console.log('(3) Eat Pinky ' + pinky.edible); 
   console.log('(4) Eat Clyde ' + clyde.edible); 
   console.log('(q) Quit');
@@ -99,26 +99,35 @@ function eatDot(dotAmount) {
     dots = 0; 
   } 
   if (dots < 0){ 
-    dots = 0
+    dots = 0; 
+  } else if (dots == 0){ 
+    lives += 1; 
   }
 }
 
 var eatGhost = (ghost) => { 
     if (ghost.edible === false) { 
-
         if (lives > 0) { 
             lives -= 1; 
             console.log(`\nYou got eaten by ${ghost.name} the ${ghost.colour} ghost. `)
         } else { 
             process.exit(); 
         }
-        
-    } else { 
-      score += 200; 
-      ghost.edible = false 
-      console.log(`\nYou ate ${ghost.name}`); 
+    } 
+    if (ghostsEaten == 0){ 
+      score += 200;
+    } else if (ghostsEaten == 1){ 
+      score += 400; 
+    } else if (ghostsEaten == 2){ 
+      score += 800; 
+    } else if (ghostsEaten == 3){
+      score += 1600; 
     }
-}
+    ghost.edible = false 
+    ghostsEaten += 1
+    lives += 1 
+    console.log(`\nYou ate ${ghost.name}`); 
+    }
 
 var eatPowerPellet = () => { 
     score += 50; 
